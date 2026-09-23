@@ -117,6 +117,11 @@ table.data thead th{
     font-weight: bold;
 }
 
+/* 痛点：表格行密度高、无悬停反馈，视线容易串行——为数据行增加悬停高亮（复用表头底色） */
+table.data tbody tr:hover{
+    background-color: #f5f7fa;
+}
+
 .site-footer{
     text-align: center;
     color: #999;

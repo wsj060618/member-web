@@ -16,6 +16,33 @@
             color: #fff;
             text-decoration: none;
         }
+        /* 痛点：列表只有标题和新增按钮，会员一多就无法按用户名/手机号快速查找 */
+        .list-tools{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .list-tools .search-input,
+        .list-tools .btn-search{
+            height: 30px;      /* 统一高度 */
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .list-tools .search-input{
+            width: 200px;
+            padding: 0 10px;
+            border: 1px solid #dcdfe6;
+            border-radius: 4px;
+        }
+        .btn-search{
+            display: inline-flex;
+            align-items: center;
+            background-color: #f5f7fa;
+            color: #409eff;
+            border: 1px solid #dcdfe6;
+            text-decoration: none;
+        }
         .btn-sm{
             display: inline-block;
             padding: 3px 10px;
@@ -49,6 +76,13 @@
             <h2>会员列表</h2>
             <a class="btn btn-add" href="register.html">+ 新增会员</a>
         </div>
+        <!-- 痛点：会员一多无法快速定位，补充独立一行的搜索入口（按用户名/手机号即时过滤） -->
+        <div class="list-tools">
+            <input type="text" class="search-input" placeholder="按用户名/手机号搜索" aria-label="按用户名/手机号搜索">
+            >
+            <a class="btn btn-search" href="#">搜索</a>
+        </div>
+        <!-- 痛点：删除是危险操作却无二次确认，点击即删——为每个“删除”增加确认提示 -->
         <table class="data">
             <thead>
             <tr>
@@ -69,7 +103,7 @@
                 <td>13800000001</td>
                 <td>男</td>
                 <td>运动</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
             </tr>
             <tr>
                 <td>2</td>
@@ -78,7 +112,7 @@
                 <td>13800000002</td>
                 <td>男</td>
                 <td>编程</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
             </tr>
             <tr>
                 <td>3</td>
@@ -87,7 +121,7 @@
                 <td>13800000003</td>
                 <td>女</td>
                 <td>阅读</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
             </tr>
             <tr>
                 <td>4</td>
@@ -96,7 +130,7 @@
                 <td>13800000004</td>
                 <td>男</td>
                 <td>音乐</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
             </tr>
             <tr>
                 <td>5</td>
@@ -105,7 +139,7 @@
                 <td>13800000005</td>
                 <td>女</td>
                 <td>运动</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
             </tr>
             </tbody>
         </table>
@@ -115,6 +149,17 @@
 <footer class="site-footer">
     <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
 </footer>
+
+<script>
+    // 痛点：列表无查找能力——输入关键字即时过滤行（用户名/手机号/邮箱均可匹配）
+    document.querySelector('.search-input').addEventListener('input', function(){
+        let kw = this.value.trim().toLowerCase();
+        document.querySelectorAll('table.data tbody tr').forEach(function(row){
+            let hit = kw === '' || row.innerText.toLowerCase().indexOf(kw) > -1;
+            row.style.display = hit ? '' : 'none';
+        });
+    });
+</script>
 
 </body>
 </html>

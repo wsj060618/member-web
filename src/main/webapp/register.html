@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>会员管理系统</title>
+    <link rel="stylesheet" href="css/site.css">
+</head>
+<body>
+<header class="site-header">
+    <h1>会员管理系统（基础版）</h1>
+    <nav>
+        <a href="main.html">首页</a><a href="register.html">注册</a><a href="login.html">登录</a>
+    </nav>
+</header>
+
+<div class="container">
+    <section class="card">
+        <h2>会员注册</h2>
+        <form action="#" method="post">
+            <div class="form-item">
+                <label for="username">用户名（必填）</label>
+                <input type="text" id="username" name="username" placeholder="3~16位字母数字下划线">
+            </div>
+
+            <div class="form-item">
+                <label for="password">密码（必填）</label>
+                <input type="password" id="password" name="password" placeholder="6~16位字母数字">
+            </div>
+
+            <div class="form-item">
+                <label for="confirmPwd">确认密码</label>
+                <input type="password" id="confirmPwd" name="confirmPwd">
+            </div>
+
+            <div class="form-item">
+                <label for="email">邮箱</label>
+                <input type="email" id="email" name="email" placeholder="example@xx.com">
+            </div>
+
+            <div class="form-item">
+                <label for="phone">手机号</label>
+                <input type="tel" id="phone" name="phone" placeholder="11位手机号">
+            </div>
+
+            <div class="form-item">
+                <label for="gender_male">性别</label>
+                <label><input type="radio" id="gender_male" name="gender" value="male" checked>&nbsp;男</label>
+                <label><input type="radio" id="gender_female" name="gender" value="female">&nbsp;女</label>
+                
+            </div>
+
+            <div class="form-item">
+                <label for="hobby">爱好</label>
+                <select id="hobby" name="hobby">
+                    <option value="">请选择</option>
+                    <option value="reading">阅读</option>
+                    <option value="music">音乐</option>
+                    <option value="traveling">旅行</option>
+                    <option value="sports">运动</option>
+                    <option value="coding">编程</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label for="remark">备注</label>
+                <textarea id="remark" name="remark" placeholder="选填"></textarea>
+            </div>
+
+            <div class="form-item">
+                <input type="submit" class="btn btn-submit" value="提交">
+                <input type="reset" class="btn btn-reset" value="重置">
+            </div>
+        </form>
+    </section>
+</div>
+
+<footer class="site-footer">
+    <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
+</footer>
+
+</body>
+</html>

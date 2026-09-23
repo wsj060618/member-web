@@ -3,39 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <title>会员管理系统</title>
+    <link rel="stylesheet" href="css/site.css">
     <style>
-        body {
-            font-family: "Microsoft YaHei", "SimHei", sans-serif;
-            margin: 0;
-            padding: 30px 25px;
+        .welcome-content p{
+            margin-top: 10px;   /* 标题与段落之间 */
         }
-
-        h1 {
-            color: #0d3b8f; /* 蓝色 */
-            font-size: 28px;
-            font-weight: bold;
-            margin: 0 0 30px 0;
+        .welcome-nav{
+            margin-top: 20px;   /* 段落与按钮之间，核心间距 */
         }
-
-        .nav {
-            font-size: 19px;
-        }
-
-        .nav a {
-            color: #1a56c4; /* 浅蓝色 */
-            text-decoration: underline; /* 下划线 */
-        }
-
-        .nav span {
-            color: #999;
-            margin: 0 12px;
+        a.btn{
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-<h1>会员管理系统（基础版）</h1>
-<div class="nav">
-    <a href="#">会员注册</a><span>|</span><a href="#">会员登录</a><span>|</span><a href="#">会员列表</a>
-</div>
+    <header class="site-header">
+        <h1>会员管理系统（基础版）</h1>
+        <nav>
+            <a href="main.html">首页</a>&nbsp;<a href="register.html">注册</a>&nbsp;<a href="login.html">登录</a>&nbsp;<a href="member-list.html">会员列表</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class=" card card-welcome">
+            <div class="welcome-content">
+                <h2>欢迎使用会员管理系统</h2>
+                <p>本系统提供会员注册、会员登录、信息维护等功能。请先注册账号再登录使用。</p>
+            </div>
+            <nav class="welcome-nav">
+                <a class="btn btn-register" href="register.html">立即注册</a>&nbsp;<a class="btn btn-login" href="login.html">已有账号？登录</a>
+            </nav>
+        </div>
+        <div class="card card-about">
+            <h2>功能简介</h2>
+            <ul>
+                <li>会员注册：填写基本信息成为会员</li>
+                <li>会员登录：账号密码验证进入系统</li>
+                <li>会员列表：查看当前会员信息（演示数据）</li>
+            </ul>
+        </div>
+    </div>
+
+
+    <footer class="site-footer">
+        <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
+    </footer>
 </body>
 </html>

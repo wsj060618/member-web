@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>会员管理系统</title>
+    <link rel="stylesheet" href="css/site.css">
+    <style>
+        .list-header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .btn-add{
+            background-color: #409eff;
+            color: #fff;
+            text-decoration: none;
+        }
+        .btn-sm{
+            display: inline-block;
+            padding: 3px 10px;
+            font-size: 12px;
+            border-radius: 4px;
+            border: 1px solid #409eff;
+            background-color: #409eff;
+            color: #fff;
+            text-decoration: none;
+        }
+        .btn-sm.danger{
+            border-color: #f56c6c;
+            background-color: #f56c6c;
+        }
+        .btn-sm + .btn-sm{
+            margin-left: 6px;
+        }
+    </style>
+</head>
+<body>
+<header class="site-header">
+    <h1>会员管理系统</h1>
+    <nav>
+        <a href="main.html">首页</a>&nbsp;<a href="register.html">注册</a>&nbsp;<a href="login.html">登录</a>&nbsp;<a href="member-list.html">会员列表</a>
+    </nav>
+</header>
+
+<div class="container">
+    <section class="card">
+        <div class="list-header">
+            <h2>会员列表</h2>
+            <a class="btn btn-add" href="register.html">+ 新增会员</a>
+        </div>
+        <table class="data">
+            <thead>
+            <tr>
+                <th>编号</th>
+                <th>用户名</th>
+                <th>邮箱</th>
+                <th>手机</th>
+                <th>性别</th>
+                <th>爱好</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>tom</td>
+                <td>tom@x.com</td>
+                <td>13800000001</td>
+                <td>男</td>
+                <td>运动</td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>jerry</td>
+                <td>jerry@x.com</td>
+                <td>13800000002</td>
+                <td>男</td>
+                <td>编程</td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>lily</td>
+                <td>lily@x.com</td>
+                <td>13800000003</td>
+                <td>女</td>
+                <td>阅读</td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>luck</td>
+                <td>luck@x.com</td>
+                <td>13800000004</td>
+                <td>男</td>
+                <td>音乐</td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>amy</td>
+                <td>amy@x.com</td>
+                <td>13800000005</td>
+                <td>女</td>
+                <td>运动</td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+
+<footer class="site-footer">
+    <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
+</footer>
+
+</body>
+</html>

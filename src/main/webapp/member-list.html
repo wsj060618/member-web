@@ -16,7 +16,13 @@
             color: #fff;
             text-decoration: none;
         }
-        /* 痛点：列表只有标题和新增按钮，会员一多就无法按用户名/手机号快速查找 */
+        /* 标题行右侧的按钮组，两个按钮并排、间距统一 */
+        .header-actions{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        /* 列表只有标题和新增按钮，会员一多就无法按用户名/手机号快速查找 */
         .list-tools{
             display: flex;
             align-items: center;
@@ -41,6 +47,12 @@
             background-color: #f5f7fa;
             color: #409eff;
             border: 1px solid #dcdfe6;
+            text-decoration: none;
+        }
+        .btn-batchdel{
+            background-color: #f56c6c;
+            color: #fff;
+            border: 1px solid #f56c6c;
             text-decoration: none;
         }
         .btn-sm{
@@ -74,18 +86,21 @@
     <section class="card">
         <div class="list-header">
             <h2>会员列表</h2>
-            <a class="btn btn-add" href="register.html">+ 新增会员</a>
+            <div class="header-actions">
+                <a class="btn btn-add" href="register.html">+ 新增会员</a>
+                <a class="btn btn-batchdel" id="btnBatchDelete" href="#">批量删除</a>
+            </div>
         </div>
-        <!-- 痛点：会员一多无法快速定位，补充独立一行的搜索入口（按用户名/手机号即时过滤） -->
+        <!-- 会员一多无法快速定位，补充独立一行的搜索入口（按用户名/手机号即时过滤） -->
         <div class="list-tools">
-            <input type="text" class="search-input" placeholder="按用户名/手机号搜索" aria-label="按用户名/手机号搜索">
-            >
-            <a class="btn btn-search" href="#">搜索</a>
+            <input type="text" id="searchInput" class="search-input" placeholder="按用户名/手机号搜索" aria-label="按用户名/手机号搜索">
+            <a class="btn btn-search" id="btnSearch" href="#">搜索</a>
         </div>
-        <!-- 痛点：删除是危险操作却无二次确认，点击即删——为每个“删除”增加确认提示 -->
+        <!-- 删除是危险操作却无二次确认，点击即删——为每个"删除"增加确认提示 -->
         <table class="data">
             <thead>
             <tr>
+                <th><input type="checkbox" id="checkAll" aria-label="全选"></th>
                 <th>编号</th>
                 <th>用户名</th>
                 <th>邮箱</th>
@@ -97,49 +112,54 @@
             </thead>
             <tbody>
             <tr>
+                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>1</td>
                 <td>tom</td>
                 <td>tom@x.com</td>
                 <td>13800000001</td>
                 <td>男</td>
                 <td>运动</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
             <tr>
+                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>2</td>
                 <td>jerry</td>
                 <td>jerry@x.com</td>
                 <td>13800000002</td>
                 <td>男</td>
                 <td>编程</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
             <tr>
+                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>3</td>
                 <td>lily</td>
                 <td>lily@x.com</td>
                 <td>13800000003</td>
                 <td>女</td>
                 <td>阅读</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
             <tr>
+                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>4</td>
                 <td>luck</td>
                 <td>luck@x.com</td>
                 <td>13800000004</td>
                 <td>男</td>
                 <td>音乐</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
             <tr>
+                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>5</td>
                 <td>amy</td>
                 <td>amy@x.com</td>
                 <td>13800000005</td>
                 <td>女</td>
                 <td>运动</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#" onclick="return confirm('确定删除该会员？');">删除</a></td>
+                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
             </tbody>
         </table>
@@ -151,14 +171,162 @@
 </footer>
 
 <script>
-    // 痛点：列表无查找能力——输入关键字即时过滤行（用户名/手机号/邮箱均可匹配）
-    document.querySelector('.search-input').addEventListener('input', function(){
-        let kw = this.value.trim().toLowerCase();
-        document.querySelectorAll('table.data tbody tr').forEach(function(row){
-            let hit = kw === '' || row.innerText.toLowerCase().indexOf(kw) > -1;
-            row.style.display = hit ? '' : 'none';
+    // 获取所有删除按钮
+    let dels = document.querySelectorAll('.btn-sm.danger');
+
+    // 为所有删除按钮绑定单击事件
+    dels.forEach(function (del) {
+        del.addEventListener('click', function (e) {
+            if (confirm('确定删除该会员？')) {
+                // 删除单条记录
+                // del.parentNode.parentNode.remove();
+                del.closest('tr').remove();
+            }
         });
     });
+
+    // 获取表头的复选框元素对象和所有每一行的复选框元素对象
+    let checkAll = document.getElementById('checkAll');
+    let rowChecks = document.querySelectorAll('.row-check');
+
+    // 给表头复选框绑定点击事件：把所有行复选框的 checked 同步为表头的 checked
+    checkAll.addEventListener('click', function () {
+        rowChecks.forEach(function (rowCb) {
+            rowCb.checked = checkAll.checked;   // 全选 / 全不选
+        });
+    });
+
+    // 给每行复选框绑定点击事件：全部选中则表头选中，否则表头取消
+    rowChecks.forEach(function (rowCb) {
+        rowCb.addEventListener('click', function () {
+            let total = rowChecks.length;                                        // 所有行复选框的长度
+            let checkedCount = document.querySelectorAll('.row-check:checked').length; // 选中的长度
+            checkAll.checked = (total === checkedCount);
+        });
+    });
+
+    // 批量删除：删除所有被勾选的行
+    let btnBatchDelete = document.getElementById('btnBatchDelete');
+    btnBatchDelete.addEventListener('click', function (e) {
+        e.preventDefault();
+        // 每次都重新查询，避免静态 rowChecks 集合在删行后失效
+        let checkedBoxes = document.querySelectorAll('.row-check:checked');
+        if (checkedBoxes.length === 0) {
+            alert('请先勾选要删除的会员');
+            return;
+        }
+        if (confirm('确定删除选中的 ' + checkedBoxes.length + ' 条会员？')) {
+            checkedBoxes.forEach(function (cb) {
+                cb.closest('tr').remove();
+                // TODO: 删除后端数据
+            });
+            checkAll.checked = false;   // 删完重置表头
+        }
+    });
+
+    // // Ajax 搜索
+    // let searchInput = document.getElementById('searchInput');
+    // let btnSearch = document.getElementById('btnSearch');
+    // let tbody = document.querySelector('table.data tbody');
+    //
+    // // 简单 XSS 转义，后端返回的用户输入在渲染前必须转义
+    // function escapeHtml(s) {
+    //     return String(s == null ? '' : s)
+    //         .replace(/&/g, '&amp;')
+    //         .replace(/</g, '&lt;')
+    //         .replace(/>/g, '&gt;')
+    //         .replace(/"/g, '&quot;')
+    //         .replace(/'/g, '&#39;');
+    // }
+    //
+    // // 把后端返回的会员列表渲染到表格
+    // function renderList(list) {
+    //     if (!list || list.length === 0) {
+    //         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#909399;">暂无数据</td></tr>';
+    //         return;
+    //     }
+    //     tbody.innerHTML = list.map(function (m) {
+    //         return '<tr>' +
+    //             '<td>' + escapeHtml(m.id) + '</td>' +
+    //             '<td>' + escapeHtml(m.username) + '</td>' +
+    //             '<td>' + escapeHtml(m.email) + '</td>' +
+    //             '<td>' + escapeHtml(m.phone) + '</td>' +
+    //             '<td>' + escapeHtml(m.gender) + '</td>' +
+    //             '<td>' + escapeHtml(m.hobbies) + '</td>' +
+    //             '<td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>' +
+    //             '</tr>';
+    //     }).join('');
+    //     // 重新绑定删除按钮事件（因为 DOM 被替换）
+    //     bindDeleteHandlers();
+    // }
+    //
+    // // 删除按钮事件绑定
+    // function bindDeleteHandlers() {
+    //     document.querySelectorAll('.btn-sm.danger').forEach(function (del) {
+    //         if (del.dataset.bound === '1') return;
+    //         del.dataset.bound = '1';
+    //         del.addEventListener('click', function (e) {
+    //             if (confirm('确定删除该会员？')) {
+    //                 del.closest('tr').remove();
+    //                 // TODO: 删除后端数据
+    //             }
+    //         });
+    //     });
+    // }
+    //
+    // // 执行搜索：GET /member/search?kw=xxx，失败直接弹窗提示错误原因
+    // function doSearch() {
+    //     let kw = searchInput.value.trim();
+    //
+    //     let xhr = new XMLHttpRequest();
+    //     xhr.open('GET', 'http://localhost:8080/member/search?kw=' + encodeURIComponent(kw), true);
+    //     xhr.setRequestHeader('Accept', 'application/json');
+    //
+    //     xhr.onload = function () {
+    //         if (xhr.status === 200) {
+    //             try {
+    //                 let list = JSON.parse(xhr.responseText);
+    //                 renderList(list);
+    //             } catch (err) {
+    //                 alert('响应数据解析失败：' + err.message);
+    //             }
+    //         } else if (xhr.status === 404) {
+    //             alert('搜索接口未就绪（404），请确认后端 /member/search 已部署');
+    //         } else if (xhr.status >= 500) {
+    //             alert('服务器异常（' + xhr.status + '），请稍后重试');
+    //         } else {
+    //             alert('请求失败，HTTP 状态码：' + xhr.status);
+    //         }
+    //     };
+    //
+    //     xhr.onerror = function () {
+    //         alert('网络错误：请检查后端服务是否启动');
+    //     };
+    //
+    //     xhr.send();
+    // }
+    //
+    // // 按钮点击搜索
+    // btnSearch.addEventListener('click', function (e) {
+    //     e.preventDefault();
+    //     doSearch();
+    // });
+    //
+    // // 回车搜索
+    // searchInput.addEventListener('keyup', function (e) {
+    //     if (e.key === 'Enter') doSearch();
+    // });
+    //
+    // // 清空输入框时还原全部数据（同样通过后端获取）
+    // searchInput.addEventListener('input', function () {
+    //     if (searchInput.value.trim() === '') doSearch();
+    // });
+    //
+    // // 页面加载时绑定删除事件；后端就绪后可取消注释 doSearch() 自动加载
+    // window.addEventListener('load', function () {
+    //     bindDeleteHandlers();
+    //     // doSearch();
+    // });
 </script>
 
 </body>

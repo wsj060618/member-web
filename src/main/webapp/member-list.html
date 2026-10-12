@@ -111,7 +111,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <tr data-id="1">
                 <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>1</td>
                 <td>tom</td>
@@ -121,7 +121,7 @@
                 <td>运动</td>
                 <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
-            <tr>
+            <tr data-id="2">
                 <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>2</td>
                 <td>jerry</td>
@@ -131,7 +131,7 @@
                 <td>编程</td>
                 <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
-            <tr>
+            <tr data-id="3">
                 <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>3</td>
                 <td>lily</td>
@@ -141,7 +141,7 @@
                 <td>阅读</td>
                 <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
-            <tr>
+            <tr data-id="4">
                 <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>4</td>
                 <td>luck</td>
@@ -151,7 +151,7 @@
                 <td>音乐</td>
                 <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
             </tr>
-            <tr>
+            <tr data-id="5">
                 <td><input type="checkbox" class="row-check" aria-label="选择"></td>
                 <td>5</td>
                 <td>amy</td>
@@ -171,162 +171,144 @@
 </footer>
 
 <script>
-    // 获取所有删除按钮
-    let dels = document.querySelectorAll('.btn-sm.danger');
-
-    // 为所有删除按钮绑定单击事件
-    dels.forEach(function (del) {
-        del.addEventListener('click', function (e) {
-            if (confirm('确定删除该会员？')) {
-                // 删除单条记录
-                // del.parentNode.parentNode.remove();
-                del.closest('tr').remove();
-            }
-        });
-    });
-
-    // 获取表头的复选框元素对象和所有每一行的复选框元素对象
+    // 静态元素引用
+    let table = document.querySelector('table.data');
+    let tbody = table.querySelector('tbody');
     let checkAll = document.getElementById('checkAll');
-    let rowChecks = document.querySelectorAll('.row-check');
-
-    // 给表头复选框绑定点击事件：把所有行复选框的 checked 同步为表头的 checked
-    checkAll.addEventListener('click', function () {
-        rowChecks.forEach(function (rowCb) {
-            rowCb.checked = checkAll.checked;   // 全选 / 全不选
-        });
-    });
-
-    // 给每行复选框绑定点击事件：全部选中则表头选中，否则表头取消
-    rowChecks.forEach(function (rowCb) {
-        rowCb.addEventListener('click', function () {
-            let total = rowChecks.length;                                        // 所有行复选框的长度
-            let checkedCount = document.querySelectorAll('.row-check:checked').length; // 选中的长度
-            checkAll.checked = (total === checkedCount);
-        });
-    });
-
-    // 批量删除：删除所有被勾选的行
     let btnBatchDelete = document.getElementById('btnBatchDelete');
+    let searchInput = document.getElementById('searchInput');
+    let btnSearch = document.getElementById('btnSearch');
+
+    // XSS 转义：后端数据渲染前必须转义
+    function escapeHtml(s) {
+        return String(s == null ? '' : s)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    // 根据当前行复选框状态，同步表头全选框
+    function syncCheckAll() {
+        let total = tbody.querySelectorAll('.row-check').length;
+        let checked = tbody.querySelectorAll('.row-check:checked').length;
+        checkAll.checked = (total > 0 && total === checked);
+    }
+
+    // 事件委托：整个表格只绑一次，动态行也能自动生效
+    table.addEventListener('click', function (e) {
+        let target = e.target;
+
+        // 表头全选 / 全不选
+        if (target === checkAll) {
+            tbody.querySelectorAll('.row-check').forEach(function (cb) {
+                cb.checked = checkAll.checked;
+            });
+            return;
+        }
+
+        // 行复选框被点击 → 重新判断表头状态
+        if (target.classList.contains('row-check')) {
+            syncCheckAll();
+            return;
+        }
+
+        // 单条删除
+        let delBtn = target.closest('.btn-sm.danger');
+        if (delBtn) {
+            if (confirm('确定删除该会员？')) {
+                let id = delBtn.closest('tr').dataset.id;
+                // TODO: 接入后端 DELETE /member/{id}（用 id）
+                delBtn.closest('tr').remove();
+                syncCheckAll();
+            }
+        }
+    });
+
+    // 批量删除
     btnBatchDelete.addEventListener('click', function (e) {
         e.preventDefault();
-        // 每次都重新查询，避免静态 rowChecks 集合在删行后失效
-        let checkedBoxes = document.querySelectorAll('.row-check:checked');
+        let checkedBoxes = tbody.querySelectorAll('.row-check:checked');
         if (checkedBoxes.length === 0) {
             alert('请先勾选要删除的会员');
             return;
         }
-        if (confirm('确定删除选中的 ' + checkedBoxes.length + ' 条会员？')) {
-            checkedBoxes.forEach(function (cb) {
-                cb.closest('tr').remove();
-                // TODO: 删除后端数据
-            });
-            checkAll.checked = false;   // 删完重置表头
-        }
+        if (!confirm('确定删除选中的 ' + checkedBoxes.length + ' 条会员？')) return;
+
+        let ids = [];
+        checkedBoxes.forEach(function (cb) {
+            let tr = cb.closest('tr');
+            if (tr.dataset.id) ids.push(tr.dataset.id);
+            tr.remove();
+        });
+        // TODO: 把 ids 发给后端批量删除，例如 DELETE /member/batch，body: JSON.stringify(ids)
+        syncCheckAll();
     });
 
-    // // Ajax 搜索
-    // let searchInput = document.getElementById('searchInput');
-    // let btnSearch = document.getElementById('btnSearch');
-    // let tbody = document.querySelector('table.data tbody');
-    //
-    // // 简单 XSS 转义，后端返回的用户输入在渲染前必须转义
-    // function escapeHtml(s) {
-    //     return String(s == null ? '' : s)
-    //         .replace(/&/g, '&amp;')
-    //         .replace(/</g, '&lt;')
-    //         .replace(/>/g, '&gt;')
-    //         .replace(/"/g, '&quot;')
-    //         .replace(/'/g, '&#39;');
-    // }
-    //
-    // // 把后端返回的会员列表渲染到表格
-    // function renderList(list) {
-    //     if (!list || list.length === 0) {
-    //         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#909399;">暂无数据</td></tr>';
-    //         return;
-    //     }
-    //     tbody.innerHTML = list.map(function (m) {
-    //         return '<tr>' +
-    //             '<td>' + escapeHtml(m.id) + '</td>' +
-    //             '<td>' + escapeHtml(m.username) + '</td>' +
-    //             '<td>' + escapeHtml(m.email) + '</td>' +
-    //             '<td>' + escapeHtml(m.phone) + '</td>' +
-    //             '<td>' + escapeHtml(m.gender) + '</td>' +
-    //             '<td>' + escapeHtml(m.hobbies) + '</td>' +
-    //             '<td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>' +
-    //             '</tr>';
-    //     }).join('');
-    //     // 重新绑定删除按钮事件（因为 DOM 被替换）
-    //     bindDeleteHandlers();
-    // }
-    //
-    // // 删除按钮事件绑定
-    // function bindDeleteHandlers() {
-    //     document.querySelectorAll('.btn-sm.danger').forEach(function (del) {
-    //         if (del.dataset.bound === '1') return;
-    //         del.dataset.bound = '1';
-    //         del.addEventListener('click', function (e) {
-    //             if (confirm('确定删除该会员？')) {
-    //                 del.closest('tr').remove();
-    //                 // TODO: 删除后端数据
-    //             }
-    //         });
-    //     });
-    // }
-    //
-    // // 执行搜索：GET /member/search?kw=xxx，失败直接弹窗提示错误原因
-    // function doSearch() {
-    //     let kw = searchInput.value.trim();
-    //
-    //     let xhr = new XMLHttpRequest();
-    //     xhr.open('GET', 'http://localhost:8080/member/search?kw=' + encodeURIComponent(kw), true);
-    //     xhr.setRequestHeader('Accept', 'application/json');
-    //
-    //     xhr.onload = function () {
-    //         if (xhr.status === 200) {
-    //             try {
-    //                 let list = JSON.parse(xhr.responseText);
-    //                 renderList(list);
-    //             } catch (err) {
-    //                 alert('响应数据解析失败：' + err.message);
-    //             }
-    //         } else if (xhr.status === 404) {
-    //             alert('搜索接口未就绪（404），请确认后端 /member/search 已部署');
-    //         } else if (xhr.status >= 500) {
-    //             alert('服务器异常（' + xhr.status + '），请稍后重试');
-    //         } else {
-    //             alert('请求失败，HTTP 状态码：' + xhr.status);
-    //         }
-    //     };
-    //
-    //     xhr.onerror = function () {
-    //         alert('网络错误：请检查后端服务是否启动');
-    //     };
-    //
-    //     xhr.send();
-    // }
-    //
-    // // 按钮点击搜索
-    // btnSearch.addEventListener('click', function (e) {
-    //     e.preventDefault();
-    //     doSearch();
-    // });
-    //
-    // // 回车搜索
-    // searchInput.addEventListener('keyup', function (e) {
-    //     if (e.key === 'Enter') doSearch();
-    // });
-    //
-    // // 清空输入框时还原全部数据（同样通过后端获取）
-    // searchInput.addEventListener('input', function () {
-    //     if (searchInput.value.trim() === '') doSearch();
-    // });
-    //
-    // // 页面加载时绑定删除事件；后端就绪后可取消注释 doSearch() 自动加载
-    // window.addEventListener('load', function () {
-    //     bindDeleteHandlers();
-    //     // doSearch();
-    // });
+    // 渲染列表（后端数据 → 表格；复选框列已内置）
+    function renderList(list) {
+        if (!list || list.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#909399;">暂无数据</td></tr>';
+            checkAll.checked = false;
+            return;
+        }
+        tbody.innerHTML = list.map(function (m) {
+            return '<tr data-id="' + escapeHtml(m.id) + '">' +
+                '<td><input type="checkbox" class="row-check" aria-label="选择"></td>' +
+                '<td>' + escapeHtml(m.id) + '</td>' +
+                '<td>' + escapeHtml(m.username) + '</td>' +
+                '<td>' + escapeHtml(m.email) + '</td>' +
+                '<td>' + escapeHtml(m.phone) + '</td>' +
+                '<td>' + escapeHtml(m.gender) + '</td>' +
+                '<td>' + escapeHtml(m.hobbies) + '</td>' +
+                '<td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>' +
+                '</tr>';
+        }).join('');
+        checkAll.checked = false;   // 重新渲染后重置全选
+    }
+
+    //  Ajax 搜索：GET /member/search?kw=xxx
+    function doSearch() {
+        let kw = searchInput.value.trim();
+        let xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8080/member/search?kw=' + encodeURIComponent(kw), true);
+        xhr.setRequestHeader('Accept', 'application/json');
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                try {
+                    renderList(JSON.parse(xhr.responseText));
+                } catch (err) {
+                    alert('响应数据解析失败：' + err.message);
+                }
+            } else if (xhr.status === 404) {
+                alert('搜索接口未就绪（404），请确认后端 /member/search 已部署');
+            } else if (xhr.status >= 500) {
+                alert('服务器异常（' + xhr.status + '），请稍后重试');
+            } else {
+                alert('请求失败，HTTP 状态码：' + xhr.status);
+            }
+        };
+        xhr.onerror = function () {
+            alert('网络错误：请检查后端服务是否启动');
+        };
+        xhr.send();
+    }
+
+    btnSearch.addEventListener('click', function (e) {
+        e.preventDefault();
+        doSearch();
+    });
+    searchInput.addEventListener('keyup', function (e) {
+        if (e.key === 'Enter') doSearch();
+    });
+    searchInput.addEventListener('input', function () {
+        if (searchInput.value.trim() === '') doSearch();
+    });
+
+    // 后端就绪后，放开下面这行即可用真实数据覆盖静态表格：
+    // window.addEventListener('load', doSearch);
 </script>
 
 </body>

@@ -1,0 +1,69 @@
+@charset "UTF-8";
+
+.list-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+.btn-add{
+    background-color: #409eff;
+    color: #fff;
+    text-decoration: none;
+}
+/* 标题行右侧的按钮组，两个按钮并排、间距统一 */
+.header-actions{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+/* 列表只有标题和新增按钮，会员一多就无法按用户名/手机号快速查找 */
+.list-tools{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+.list-tools .search-input,
+.list-tools .btn-search{
+    height: 30px;      /* 统一高度 */
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.list-tools .search-input{
+    width: 200px;
+    padding: 0 10px;
+    border: 1px solid #dcdfe6;
+    border-radius: 4px;
+}
+.btn-search{
+    display: inline-flex;
+    align-items: center;
+    background-color: #f5f7fa;
+    color: #409eff;
+    border: 1px solid #dcdfe6;
+    text-decoration: none;
+}
+.btn-batchdel{
+    background-color: #f56c6c;
+    color: #fff;
+    border: 1px solid #f56c6c;
+    text-decoration: none;
+}
+.btn-sm{
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: 1px solid #409eff;
+    background-color: #409eff;
+    color: #fff;
+    text-decoration: none;
+}
+.btn-sm.danger{
+    border-color: #f56c6c;
+    background-color: #f56c6c;
+}
+.btn-sm + .btn-sm{
+    margin-left: 6px;
+}

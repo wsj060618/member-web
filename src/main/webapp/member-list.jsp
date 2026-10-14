@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -78,7 +79,7 @@
 <header class="site-header">
     <h1>会员管理系统</h1>
     <nav>
-        <a href="main.html">首页</a>&nbsp;<a href="register.html">注册</a>&nbsp;<a href="login.html">登录</a>&nbsp;<a href="member-list.html">会员列表</a>
+        ${username == null ? '' : username + "，欢迎登录！"}<a href="main.html">首页</a>&nbsp;<a href="register.html">注册</a>&nbsp;<a href="login.jsp">登录</a>&nbsp;<a href="member-list.jsp">会员列表</a>
     </nav>
 </header>
 

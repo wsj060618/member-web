@@ -1,0 +1,14 @@
+@charset "UTF-8";
+
+.welcome-content p{
+    margin-top: 10px;   /* 标题与段落之间 */
+}
+.welcome-nav{
+    margin-top: 20px;   /* 段落与按钮之间，核心间距 */
+}
+.card ul{
+    margin-top: 10px;
+}
+a.btn{
+    text-decoration: none;
+}

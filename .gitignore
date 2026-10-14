@@ -35,5 +35,11 @@ build/
 ### VS Code ###
 .vscode/
 
+### worbuddy ai ###
+.workbuddy-ai
+
+### smarttomcat ###
+.smarttomcat
+
 ### Mac OS ###
 .DS_Store

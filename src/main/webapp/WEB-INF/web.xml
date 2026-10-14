@@ -1,7 +1,23 @@
-<!DOCTYPE web-app PUBLIC
- "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
- "http://java.sun.com/dtd/web-app_2_3.dtd" >
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee
+                             https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd"
+         version="6.1">
+  <display-name>member-web</display-name>
 
-<web-app>
-  <display-name>Archetype Created Web Application</display-name>
+  <!-- MainServlet，将访问路径 /main 映射到该 Servlet -->
+  <servlet>
+    <servlet-name>mainServlet</servlet-name>
+    <servlet-class>com.perswsj.memberweb.MainServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>mainServlet</servlet-name>
+    <url-pattern>/main</url-pattern>
+  </servlet-mapping>
+
+  <!-- 配置项目首页，访问上下文路径时默认展示 main.html -->
+  <welcome-file-list>
+    <welcome-file>main.html</welcome-file>
+  </welcome-file-list>
 </web-app>

@@ -9,6 +9,7 @@
 .btn-add{
     background-color: #409eff;
     color: #fff;
+    border: 1px solid #409eff;
     text-decoration: none;
 }
 /* 标题行右侧的按钮组，两个按钮并排、间距统一 */
@@ -16,6 +17,14 @@
     display: flex;
     align-items: center;
     gap: 8px;
+}
+/* 两个按钮文字长度不同，统一最小宽度后视觉等宽 */
+.header-actions .btn{
+    display: inline-block;
+    min-width: 100px;
+    padding: 6px 14px;
+    text-align: center;
+    font-size: 13px;
 }
 /* 列表只有标题和新增按钮，会员一多就无法按用户名/手机号快速查找 */
 .list-tools{

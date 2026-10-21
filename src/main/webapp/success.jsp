@@ -20,9 +20,13 @@
             case "traveling" -> "旅行";
             case "sports" -> "运动";
             case "coding" -> "编程";
-            default -> hobby;   // 未知值原样显示
+            default -> hobby;
         };
     }
+
+    // 把结果放进 request 作用域，EL 才能读到
+    request.setAttribute("genderText", genderText);
+    request.setAttribute("hobbyText", hobbyText);
 %>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -40,14 +44,14 @@
 <div class="container">
     <section class="card">
         <p class="success-tip"><span class="check">✓</span>注册成功</p>
-        <p class="welcome-line">欢迎您，<%= username %>!</p>
+        <p class="welcome-line">欢迎您，${ username }!</p>
 
         <table class="info-table">
-            <tr><th>用户名</th><td><%= username %></td></tr>
-            <tr><th>邮箱</th><td><%= email %></td></tr>
-            <tr><th>手机</th><td><%= phone %></td></tr>
-            <tr><th>性别</th><td><%= genderText %></td></tr>
-            <tr><th>爱好</th><td><%= hobbyText %></td></tr>
+            <tr><th>用户名</th><td>${ username }</td></tr>
+            <tr><th>邮箱</th><td>${ empty email ? "未填写" : email }</td></tr>
+            <tr><th>手机</th><td>${ empty phone ? "未填写" : phone }</td></tr>
+            <tr><th>性别</th><td>${ genderText }</td></tr>
+            <tr><th>爱好</th><td>${ hobbyText }</td></tr>
         </table>
 
         <p class="go-login">

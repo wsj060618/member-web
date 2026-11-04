@@ -1,5 +1,3 @@
-<%@ page import="com.perswsj.memberweb.pojo.Member" %>
-<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
@@ -47,31 +45,6 @@
             </tr>
             </thead>
             <tbody>
-<%--                <%--%>
-<%--                    List<Member> memberList = (List<Member>) request.getAttribute("memberList");--%>
-<%--                    if (memberList != null && !memberList.isEmpty()) {--%>
-<%--                        for (Member member : memberList) {--%>
-<%--                    %>--%>
-<%--                    <tr>--%>
-<%--                        <td><input type="checkbox" class="row-check" aria-label="选择"></td>--%>
-<%--                        <td><%=member.getId()%>--%>
-<%--                        </td>--%>
-<%--                        <td><%=member.getUname()%>--%>
-<%--                        </td>--%>
-<%--                        <td><%=member.getEmail()%>--%>
-<%--                        </td>--%>
-<%--                        <td><%=member.getPhone()%>--%>
-<%--                        </td>--%>
-<%--                        <td><%=member.getSexText()%>--%>
-<%--                        </td>--%>
-<%--                        <td><%=member.getHobbyText()%>--%>
-<%--                        </td>--%>
-<%--                        <td><a class="btn-sm" href="detail?id=<%= member.getId() %>">查看</a> <a class="btn-sm danger" href="#">删除</a></td>--%>
-<%--                    </tr>--%>
-<%--                    <%--%>
-<%--                        }--%>
-<%--                    }--%>
-<%--                %>--%>
                 <c:forEach items="${memberList}" var="member">
                     <tr>
                         <td><input type="checkbox" class="row-check" aria-label="选择"></td>

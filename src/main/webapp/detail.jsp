@@ -1,5 +1,4 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="com.perswsj.memberweb.pojo.Member" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -22,26 +21,6 @@
 <div class="container">
     <section class="card">
         <h2>会员详情</h2>
-<%--        <%--%>
-<%--            // 通过 request.getAttribute 获取该会员信息--%>
-<%--            Member member = (Member) request.getAttribute("member");--%>
-<%--            if (member == null) {--%>
-<%--        %>--%>
-<%--        <p style="color:#909399;text-align:center;padding:24px 0;">未找到该会员，可能已被删除。</p>--%>
-<%--        <%--%>
-<%--        } else {--%>
-<%--        %>--%>
-<%--        <table class="data detail-table">--%>
-<%--            <tr><th>编号</th><td><%= member.getId() %></td></tr>--%>
-<%--            <tr><th>用户名</th><td><%= member.getUname() %></td></tr>--%>
-<%--            <tr><th>邮箱</th><td><%= member.getEmail() %></td></tr>--%>
-<%--            <tr><th>手机</th><td><%= member.getPhone() %></td></tr>--%>
-<%--            <tr><th>性别</th><td><%= member.getSexText() %></td></tr>--%>
-<%--            <tr><th>爱好</th><td><%= member.getHobbyText() %></td></tr>--%>
-<%--        </table>--%>
-<%--        <%--%>
-<%--            }--%>
-<%--        %>--%>
         <c:choose>
             <c:when test="${empty member}">
                 <p style="color:#909399;text-align:center;padding:24px 0;">未找到该会员，可能已被删除。</p>

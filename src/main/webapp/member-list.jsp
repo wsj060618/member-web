@@ -1,4 +1,7 @@
+<%@ page import="com.perswsj.memberweb.pojo.Member" %>
+<%@ page import="java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -11,7 +14,7 @@
 <header class="site-header">
     <h1>会员管理系统</h1>
     <nav>
-        ${empty username ? "" : username}${empty username ? "" : "，欢迎登录！"}<a href="main.html">首页</a>&nbsp;<a href="register.html">注册</a>&nbsp;<a href="login.jsp">登录</a>&nbsp;<a href="member-list.jsp">会员列表</a>
+        ${empty username ? "" : username}${empty username ? "" : "，欢迎登录！"}<a href="main.html">首页</a>&nbsp;<a href="register.html">注册</a>&nbsp;<a href="login.jsp">登录</a>&nbsp;<a href="member-list">会员列表</a>
     </nav>
 </header>
 
@@ -24,12 +27,12 @@
                 <a class="btn btn-batchdel" id="btnBatchDelete" href="#">批量删除</a>
             </div>
         </div>
-        <!-- 会员一多无法快速定位，补充独立一行的搜索入口（按用户名/手机号即时过滤） -->
-        <div class="list-tools">
-            <input type="text" id="searchInput" class="search-input" placeholder="按用户名/手机号搜索" aria-label="按用户名/手机号搜索">
-            <a class="btn btn-search" id="btnSearch" href="#">搜索</a>
-        </div>
-        <!-- 删除是危险操作却无二次确认，点击即删——为每个"删除"增加确认提示 -->
+        <!-- 搜索 -->
+        <form class="list-tools" action="member-list" method="get">
+            <input type="text" name="keyword" class="search-input" value="${keyword}" placeholder="按用户名搜索" aria-label="按用户名搜索">
+            <input type="submit" class="btn btn-search" value="搜索">
+            <a class="btn btn-search" href="member-list">显示全部</a>
+        </form>
         <table class="data">
             <thead>
             <tr>
@@ -44,56 +47,43 @@
             </tr>
             </thead>
             <tbody>
-            <tr data-id="1">
-                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
-                <td>1</td>
-                <td>tom</td>
-                <td>tom@x.com</td>
-                <td>13800000001</td>
-                <td>男</td>
-                <td>运动</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
-            </tr>
-            <tr data-id="2">
-                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
-                <td>2</td>
-                <td>jerry</td>
-                <td>jerry@x.com</td>
-                <td>13800000002</td>
-                <td>男</td>
-                <td>编程</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
-            </tr>
-            <tr data-id="3">
-                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
-                <td>3</td>
-                <td>lily</td>
-                <td>lily@x.com</td>
-                <td>13800000003</td>
-                <td>女</td>
-                <td>阅读</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
-            </tr>
-            <tr data-id="4">
-                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
-                <td>4</td>
-                <td>luck</td>
-                <td>luck@x.com</td>
-                <td>13800000004</td>
-                <td>男</td>
-                <td>音乐</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
-            </tr>
-            <tr data-id="5">
-                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
-                <td>5</td>
-                <td>amy</td>
-                <td>amy@x.com</td>
-                <td>13800000005</td>
-                <td>女</td>
-                <td>运动</td>
-                <td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
-            </tr>
+<%--                <%--%>
+<%--                    List<Member> memberList = (List<Member>) request.getAttribute("memberList");--%>
+<%--                    if (memberList != null && !memberList.isEmpty()) {--%>
+<%--                        for (Member member : memberList) {--%>
+<%--                    %>--%>
+<%--                    <tr>--%>
+<%--                        <td><input type="checkbox" class="row-check" aria-label="选择"></td>--%>
+<%--                        <td><%=member.getId()%>--%>
+<%--                        </td>--%>
+<%--                        <td><%=member.getUname()%>--%>
+<%--                        </td>--%>
+<%--                        <td><%=member.getEmail()%>--%>
+<%--                        </td>--%>
+<%--                        <td><%=member.getPhone()%>--%>
+<%--                        </td>--%>
+<%--                        <td><%=member.getSexText()%>--%>
+<%--                        </td>--%>
+<%--                        <td><%=member.getHobbyText()%>--%>
+<%--                        </td>--%>
+<%--                        <td><a class="btn-sm" href="detail?id=<%= member.getId() %>">查看</a> <a class="btn-sm danger" href="#">删除</a></td>--%>
+<%--                    </tr>--%>
+<%--                    <%--%>
+<%--                        }--%>
+<%--                    }--%>
+<%--                %>--%>
+                <c:forEach items="${memberList}" var="member">
+                    <tr>
+                        <td><input type="checkbox" class="row-check" aria-label="选择"></td>
+                        <td>${member.id}</td>
+                        <td>${member.uname}</td>
+                        <td>${member.email}</td>
+                        <td>${member.phone}</td>
+                        <td>${member.sexText}</td>
+                        <td>${member.hobbyText}</td>
+                        <td><a class="btn-sm" href="detail?id=${member.id}">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+                    </tr>
+                </c:forEach>
             </tbody>
         </table>
     </section>

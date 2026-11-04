@@ -46,9 +46,9 @@ form.addEventListener('submit', (e) => {
             let res = JSON.parse(xhr.responseText);
             if (res.success) {
                 showMsg('登录成功，欢迎' + username.value, 'success');
-                // 提示显示片刻后跳转到会员列表页
+                // 提示显示片刻后跳转到会员列表页（先请求 MemberListServlet，再由它转发到 JSP）
                 setTimeout(function () {
-                    location.href = 'member-list.jsp';
+                    location.href = 'member-list';
                 }, 300);
             }
         } else {

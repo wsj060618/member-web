@@ -3,8 +3,10 @@ let table = document.querySelector('table.data');
 let tbody = table.querySelector('tbody');
 let checkAll = document.getElementById('checkAll');
 let btnBatchDelete = document.getElementById('btnBatchDelete');
-let searchInput = document.getElementById('searchInput');
-let btnSearch = document.getElementById('btnSearch');
+
+// 英文编码 -> 中文显示（与注册页表单 value 对应）
+let SEX_MAP = { male: '男', female: '女' };
+let HOBBY_MAP = { reading: '阅读', music: '音乐', traveling: '旅行', sports: '运动', coding: '编程' };
 
 // XSS 转义：后端数据渲染前必须转义
 function escapeHtml(s) {
@@ -81,58 +83,21 @@ function renderList(list) {
         return;
     }
     tbody.innerHTML = list.map(function (m) {
+        let sexText = SEX_MAP[m.gender] || m.gender || '';
+        let hobbyText = HOBBY_MAP[m.hobbies] || m.hobbies || '';
         return '<tr data-id="' + escapeHtml(m.id) + '">' +
             '<td><input type="checkbox" class="row-check" aria-label="选择"></td>' +
             '<td>' + escapeHtml(m.id) + '</td>' +
             '<td>' + escapeHtml(m.username) + '</td>' +
             '<td>' + escapeHtml(m.email) + '</td>' +
             '<td>' + escapeHtml(m.phone) + '</td>' +
-            '<td>' + escapeHtml(m.gender) + '</td>' +
-            '<td>' + escapeHtml(m.hobbies) + '</td>' +
+            '<td>' + escapeHtml(sexText) + '</td>' +
+            '<td>' + escapeHtml(hobbyText) + '</td>' +
             '<td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>' +
             '</tr>';
     }).join('');
     checkAll.checked = false;   // 重新渲染后重置全选
 }
-
-//  Ajax 搜索：GET member/search?kw=xxx
-function doSearch() {
-    let kw = searchInput.value.trim();
-    let xhr = new XMLHttpRequest();
-    xhr.open('GET', 'member/search?kw=' + encodeURIComponent(kw), true);
-    xhr.setRequestHeader('Accept', 'application/json');
-
-    xhr.onload = function () {
-        if (xhr.status === 200) {
-            try {
-                renderList(JSON.parse(xhr.responseText));
-            } catch (err) {
-                alert('响应数据解析失败：' + err.message);
-            }
-        } else if (xhr.status === 404) {
-            alert('搜索接口未就绪（404），请确认后端 /member/search 已部署');
-        } else if (xhr.status >= 500) {
-            alert('服务器异常（' + xhr.status + '），请稍后重试');
-        } else {
-            alert('请求失败，HTTP 状态码：' + xhr.status);
-        }
-    };
-    xhr.onerror = function () {
-        alert('网络错误：请检查后端服务是否启动');
-    };
-    xhr.send();
-}
-
-btnSearch.addEventListener('click', function (e) {
-    e.preventDefault();
-    doSearch();
-});
-searchInput.addEventListener('keyup', function (e) {
-    if (e.key === 'Enter') doSearch();
-});
-searchInput.addEventListener('input', function () {
-    if (searchInput.value.trim() === '') doSearch();
-});
 
 // 后端就绪后，放开下面这行即可用真实数据覆盖静态表格：
 // window.addEventListener('load', doSearch);

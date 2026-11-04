@@ -1,0 +1,32 @@
+@charset "UTF-8";
+
+.detail-table{
+    max-width: 520px;
+    margin: 12px auto;
+}
+
+.detail-table th{
+    width: 100px;
+    background-color: #f5f7fa;
+    color: #606266;
+    font-weight: normal;
+}
+
+.detail-actions{
+    text-align: center;
+    margin-top: 24px;
+}
+
+.btn-back{
+    display: inline-block;
+    background-color: #fff;
+    color: #606266;
+    border: 1px solid #dcdfe6;
+    text-decoration: none;
+}
+
+.btn-back:hover{
+    color: #409eff;
+    border-color: #409eff;
+    background-color: #fff;
+}

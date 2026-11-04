@@ -1,4 +1,4 @@
-package com.perswsj.memberweb;
+package com.perswsj.memberweb.servlet;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

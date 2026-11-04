@@ -1,4 +1,4 @@
-package com.perswsj.memberweb;
+package com.perswsj.memberweb.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;

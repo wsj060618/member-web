@@ -2,41 +2,22 @@ package com.perswsj.memberweb.dao;
 
 import com.perswsj.memberweb.pojo.Member;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MemberDao {
-    private static List<Member> list;
+/**
+ * 会员持久层接口。
+ * <p>
+ * {@code findAll}、{@code findById} 的方法名、参数、返回值与实验五的内存版保持一致，
+ * 控制层只依赖接口，把实现类换成 {@link JdbcMemberDao} 即可，调用代码不用改。
+ */
+public interface MemberDao {
 
-    static {
-        list = new ArrayList<>();
-        list.add(new Member(1, "张三", "zhangsan@example.com", "12345678901", "male", "sports"));
-        list.add(new Member(2, "李四", "lisi@example.com", "12345678902", "female", "reading"));
-        list.add(new Member(3, "王五", "wangwu@example.com", "12345678903", "male", "coding"));
-        list.add(new Member(4, "赵六", "zhaoliu@example.com", "12345678904", "female", "music"));
-        list.add(new Member(5, "孙七", "sunqi@example.com", "12345678905", "male", "traveling"));
-    }
+    /** 查询全部会员 */
+    List<Member> findAll();
 
-    public List<Member> findAll() {
-        return list;
-    }
+    /** 按主键查询单个会员，查不到返回 null */
+    Member findById(Integer id);
 
-    public List<Member> findByName(String name) {
-        List<Member> result = new ArrayList<>();
-        for (Member member : list) {
-            if (member.getUname().contains(name)) {
-                result.add(member);
-            }
-        }
-        return result;
-    }
-
-    public Member findById(Integer id) {
-        for (Member member : list) {
-            if (member.getId() == id) {
-                return member;
-            }
-        }
-        return null;
-    }
+    /** 按用户名模糊查询会员 */
+    List<Member> findByName(String name);
 }

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <Resource name="jdbc/memberDS"
+              auth="Container"
+              type="javax.sql.DataSource"
+              driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://localhost:3306/memberdb?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai&amp;allowPublicKeyRetrieval=true"
+              username="root"
+              password="060618"
+              maxTotal="10"
+              maxIdle="5"
+              minIdle="1"
+              maxWaitMillis="10000"
+              validationQuery="SELECT 1"
+              testOnBorrow="true"
+              testWhileIdle="true"
+              timeBetweenEvictionRunsMillis="30000"/>
+</Context>

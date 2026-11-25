@@ -1,5 +1,6 @@
 package com.perswsj.memberweb.servlet;
 
+import com.perswsj.memberweb.dao.JdbcMemberDao;
 import com.perswsj.memberweb.dao.MemberDao;
 import com.perswsj.memberweb.pojo.Member;
 import jakarta.servlet.ServletException;
@@ -10,10 +11,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+
+/**
+ * 会员详情：根据 ID 查询会员信息。
+ * <p>
+ */
 @WebServlet("/detail")
 public class MemberDetailServlet extends HttpServlet {
 
-    MemberDao memberDao = new MemberDao();
+    private final MemberDao memberDao = new JdbcMemberDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

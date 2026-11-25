@@ -16,6 +16,8 @@ public class Member implements Serializable {
     private String phone;
     private String sex;
     private String hobby;
+    /** 备注：对应 member 表的 remark 列 */
+    private String remark;
 
     public String getSexText() {
         return switch (sex == null ? "" : sex) {
@@ -30,7 +32,7 @@ public class Member implements Serializable {
             case "reading" -> "阅读";
             case "music" -> "音乐";
             case "traveling" -> "旅行";
-            case "sports" -> "运动";
+            case "sports", "sport" -> "运动";
             case "coding" -> "编程";
             default -> hobby;
         };

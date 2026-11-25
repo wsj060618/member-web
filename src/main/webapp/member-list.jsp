@@ -25,12 +25,20 @@
                 <a class="btn btn-batchdel" id="btnBatchDelete" href="#">批量删除</a>
             </div>
         </div>
-        <!-- 搜索 -->
+        <!-- 搜索：GET 提交到 /member-list，关键字为空则查全部；关键字经 URL 编码，中文与特殊字符都能正确传递 -->
         <form class="list-tools" action="member-list" method="get">
-            <input type="text" name="keyword" class="search-input" value="${keyword}" placeholder="按用户名搜索" aria-label="按用户名搜索">
+            <input type="text" name="keyword" class="search-input" value="<c:out value='${keyword}'/>"
+                   placeholder="按用户名搜索" aria-label="按用户名搜索">
             <input type="submit" class="btn btn-search" value="搜索">
             <a class="btn btn-search" href="member-list">显示全部</a>
         </form>
+        <c:if test="${not empty errorMessage}">
+            <p class="list-error"><c:out value="${errorMessage}"/></p>
+        </c:if>
+        <!-- 搜索中给出明确反馈：关键字回显 + 结果条数 -->
+        <c:if test="${not empty keyword}">
+            <p class="list-tip">当前搜索关键字：<strong><c:out value="${keyword}"/></strong>，共 ${empty memberList ? 0 : memberList.size()} 条结果</p>
+        </c:if>
         <table class="data">
             <thead>
             <tr>
@@ -45,18 +53,27 @@
             </tr>
             </thead>
             <tbody>
-                <c:forEach items="${memberList}" var="member">
-                    <tr>
-                        <td><input type="checkbox" class="row-check" aria-label="选择"></td>
-                        <td>${member.id}</td>
-                        <td>${member.uname}</td>
-                        <td>${member.email}</td>
-                        <td>${member.phone}</td>
-                        <td>${member.sexText}</td>
-                        <td>${member.hobbyText}</td>
-                        <td><a class="btn-sm" href="detail?id=${member.id}">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
-                    </tr>
-                </c:forEach>
+                <c:choose>
+                    <c:when test="${empty memberList}">
+                        <tr>
+                            <td colspan="8" class="empty-tip">暂无会员数据</td>
+                        </tr>
+                    </c:when>
+                    <c:otherwise>
+                        <c:forEach items="${memberList}" var="member">
+                            <tr data-id="${member.id}">
+                                <td><input type="checkbox" class="row-check" aria-label="选择"></td>
+                                <td>${member.id}</td>
+                                <td>${member.uname}</td>
+                                <td>${member.email}</td>
+                                <td>${member.phone}</td>
+                                <td>${member.sexText}</td>
+                                <td>${member.hobbyText}</td>
+                                <td><a class="btn-sm" href="detail?id=${member.id}">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+                            </tr>
+                        </c:forEach>
+                    </c:otherwise>
+                </c:choose>
             </tbody>
         </table>
     </section>

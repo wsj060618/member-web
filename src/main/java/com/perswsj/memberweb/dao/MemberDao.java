@@ -1,5 +1,6 @@
 package com.perswsj.memberweb.dao;
 
+import com.perswsj.memberweb.exception.DuplicateUsernameException;
 import com.perswsj.memberweb.pojo.Member;
 
 import java.util.List;
@@ -20,4 +21,12 @@ public interface MemberDao {
 
     /** 按用户名模糊查询会员 */
     List<Member> findByName(String name);
+
+    /**
+     * 新增会员，返回受影响行数。
+     * <p>
+     * username 列有唯一索引，用户名重复时数据库抛出 1062 错误，
+     * 由实现类转成 {@link DuplicateUsernameException}，供控制层区分处理。
+     */
+    int add(Member m);
 }

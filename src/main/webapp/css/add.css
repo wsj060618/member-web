@@ -1,0 +1,53 @@
+@charset "UTF-8";
+
+/* 新增会员表单：在 site.css 的 .card / .form-item 基础上做少量补充 */
+
+/* 表单整体收窄并居中，输入框不会横跨 1000px 显得松散 */
+#addForm{
+    max-width: 520px;
+    margin: 12px auto 0;
+}
+
+/* 性别单选按钮不需要撑满整行，只保留点击热区 */
+.radio-label{
+    display: inline-block;
+    margin-right: 20px;
+    color: #606266;
+    cursor: pointer;
+}
+
+.radio-label input[type="radio"]{
+    width: auto;
+    margin-right: 2px;
+    vertical-align: middle;
+}
+
+/* 按钮行：三个按钮横向排开，返回列表与保存按钮区分主次 */
+.form-actions{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.form-actions .btn{
+    cursor: pointer;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+/* 返回列表：次要按钮，白底灰字，与保存（蓝色实心）形成主次对比 */
+.btn-back{
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+    background-color: #fff;
+    color: #606266;
+    text-decoration: none;
+}
+
+.btn-back:hover{
+    color: #409eff;
+    border-color: #409eff;
+}

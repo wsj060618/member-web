@@ -21,12 +21,10 @@ import java.util.List;
 @WebServlet({"/member-list"})
 public class MemberListServlet extends HttpServlet {
 
-    /** 无状态 DAO，可安全地作为 Servlet 的成员变量共享；Connection 等资源绝不放这里 */
     private final MemberDao memberDao = new JdbcMemberDao();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 获取传过来的查询条件；先去掉首尾空格，保证查询条件与搜索框回显一致
         String keyword = req.getParameter("keyword");
         if (keyword != null) {
             keyword = keyword.trim();
@@ -41,14 +39,20 @@ public class MemberListServlet extends HttpServlet {
                 list = memberDao.findByName(keyword);
             }
         } catch (RuntimeException e) {
-            // SQL 异常只在控制台留日志，页面只显示友好提示，不输出 SQL、库名、账号等细节
+            // SQL 异常处理
             log("查询会员列表失败，keyword = " + keyword, e);
             req.setAttribute("errorMessage", "查询会员数据失败，请稍后重试或联系管理员");
         }
 
-        // 会员信息和搜索词都存入 request 域（只在本次页面显示，不放 Session）
+        // 会员信息和搜索词存入 request 域
         req.setAttribute("memberList", list);
         req.setAttribute("keyword", keyword);
+
+        // 接收新增会员后重定向带回的提示消息
+        String message = req.getParameter("message");
+        if (message != null && !message.isBlank()) {
+            req.setAttribute("message", message);
+        }
 
         // 转发到列表页面
         req.getRequestDispatcher("/member-list.jsp").forward(req, resp);

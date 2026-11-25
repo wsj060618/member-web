@@ -4,18 +4,15 @@ let tbody = table.querySelector('tbody');
 let checkAll = document.getElementById('checkAll');
 let btnBatchDelete = document.getElementById('btnBatchDelete');
 
-// 英文编码 -> 中文显示（与注册页表单 value 对应）
-let SEX_MAP = { male: '男', female: '女' };
-let HOBBY_MAP = { reading: '阅读', music: '音乐', traveling: '旅行', sports: '运动', coding: '编程' };
-
-// XSS 转义：后端数据渲染前必须转义
-function escapeHtml(s) {
-    return String(s == null ? '' : s)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+// 新增会员结果
+// 脚本在 </body> 前引入，此时 #flashMessage 已在 DOM 中，可直接取用
+let flashBox = document.getElementById('flashMessage');
+if (flashBox) {
+    alert(flashBox.dataset.message);
+    // 清掉 URL 上的 message 参数，避免刷新页面重复弹窗
+    let url = new URL(location.href);
+    url.searchParams.delete('message');
+    history.replaceState(null, '', url);
 }
 
 // 根据当前行复选框状态，同步表头全选框
@@ -74,30 +71,3 @@ btnBatchDelete.addEventListener('click', function (e) {
     // TODO: 把 ids 发给后端批量删除，例如 DELETE /member/batch，body: JSON.stringify(ids)
     syncCheckAll();
 });
-
-// 渲染列表（后端数据 → 表格；复选框列已内置）
-function renderList(list) {
-    if (!list || list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#909399;">暂无数据</td></tr>';
-        checkAll.checked = false;
-        return;
-    }
-    tbody.innerHTML = list.map(function (m) {
-        let sexText = SEX_MAP[m.gender] || m.gender || '';
-        let hobbyText = HOBBY_MAP[m.hobbies] || m.hobbies || '';
-        return '<tr data-id="' + escapeHtml(m.id) + '">' +
-            '<td><input type="checkbox" class="row-check" aria-label="选择"></td>' +
-            '<td>' + escapeHtml(m.id) + '</td>' +
-            '<td>' + escapeHtml(m.username) + '</td>' +
-            '<td>' + escapeHtml(m.email) + '</td>' +
-            '<td>' + escapeHtml(m.phone) + '</td>' +
-            '<td>' + escapeHtml(sexText) + '</td>' +
-            '<td>' + escapeHtml(hobbyText) + '</td>' +
-            '<td><a class="btn-sm" href="#">查看</a> <a class="btn-sm danger" href="#">删除</a></td>' +
-            '</tr>';
-    }).join('');
-    checkAll.checked = false;   // 重新渲染后重置全选
-}
-
-// 后端就绪后，放开下面这行即可用真实数据覆盖静态表格：
-// window.addEventListener('load', doSearch);

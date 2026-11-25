@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -21,7 +22,8 @@
         <div class="list-header">
             <h2>会员列表</h2>
             <div class="header-actions">
-                <a class="btn btn-add" href="register.html">+ 新增会员</a>
+                <%-- 指向新增会员 Servlet 的 doGet，由它转发到 add.jsp 显示表单 --%>
+                <a class="btn btn-add" href="member-add">+ 新增会员</a>
                 <a class="btn btn-batchdel" id="btnBatchDelete" href="#">批量删除</a>
             </div>
         </div>
@@ -32,6 +34,13 @@
             <input type="submit" class="btn btn-search" value="搜索">
             <a class="btn btn-search" href="member-list">显示全部</a>
         </form>
+        <%-- 新增会员后的提示：由 MemberAddServlet 以 ?message= 重定向带回（PRG）。
+             前端改为 alert 弹窗提示，不再在页面顶部渲染内联提示条。
+             message 先写入 data-message 属性（c:out 做 XML 转义，防止引号等特殊字符破坏属性），
+             再由 member-list.js 读取并弹出；弹出后立即清除 URL 上的 message 参数，避免刷新时重复提示。 --%>
+        <c:if test="${not empty message}">
+            <div id="flashMessage" data-message="<c:out value='${message}'/>" ${fn:contains(message, '成功') ? 'data-type="success"' : 'data-type="fail"'} hidden></div>
+        </c:if>
         <c:if test="${not empty errorMessage}">
             <p class="list-error"><c:out value="${errorMessage}"/></p>
         </c:if>
@@ -83,7 +92,7 @@
     <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
 </footer>
 
-<script src="js/member-list.js"></script>
+<script src="js/member-list.js?v=20261125"></script>
 
 </body>
 </html>

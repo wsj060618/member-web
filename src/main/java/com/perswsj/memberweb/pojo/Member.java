@@ -12,6 +12,8 @@ import java.io.Serializable;
 public class Member implements Serializable {
     private int id;
     private String uname;
+    /** 密码：对应 member 表的 password 列，新增会员时需要写入 */
+    private String password;
     private String email;
     private String phone;
     private String sex;

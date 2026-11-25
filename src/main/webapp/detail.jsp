@@ -33,6 +33,8 @@
                     <tr><th>手机</th><td>${member.phone}</td></tr>
                     <tr><th>性别</th><td>${member.sexText}</td></tr>
                     <tr><th>爱好</th><td>${member.hobbyText}</td></tr>
+                    <%-- 备注：remark 列允许为 null，EL 取到 null 时输出空串，无需额外判空 --%>
+                    <tr><th>备注</th><td>${member.remark}</td></tr>
                 </table>
             </c:otherwise>
         </c:choose>

@@ -29,4 +29,16 @@ public interface MemberDao {
      * 由实现类转成 {@link DuplicateUsernameException}，供控制层区分处理。
      */
     int add(Member m);
+
+    /**
+     * 修改会员，返回受影响行数。
+     * <p>
+     * UPDATE 的 SET 部分更新除 id 外的七个字段，WHERE 用 id 限定记录，共八个占位符。
+     * 把用户名改成其他会员已占用的名字时同样会触发唯一索引冲突，抛出
+     * {@link DuplicateUsernameException}，供控制层与新增任务统一处理。
+     * <p>
+     * 返回 0 有两种可能：id 不存在，或提交的数据与库中原值完全相同（MySQL 认为没有行被改变）。
+     * 控制层据此给出"编号不存在或数据未变化"的提示。
+     */
+    int update(Member m);
 }

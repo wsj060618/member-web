@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class JdbcMemberDao implements MemberDao {
 
-    /** 查询列清单：集中一处，保证三个查询方法取出的列与顺序一致 */
     private static final String COLUMNS = "id, username, password, email, phone, gender, hobby, remark";
 
     private static final String SQL_FIND_ALL =
@@ -30,19 +29,20 @@ public class JdbcMemberDao implements MemberDao {
     private static final String SQL_FIND_BY_ID =
             "SELECT " + COLUMNS + " FROM `member` WHERE id = ?";
 
-    /**
-     * 按用户名模糊查询。关键字整体作为一个参数绑定到 ?，
-     * SQL 结构保持为常量字符串，不把用户输入拼接进 SQL，从根本上避免 SQL 注入。
-     */
     private static final String SQL_FIND_BY_NAME =
             "SELECT " + COLUMNS + " FROM `member` WHERE username LIKE CONCAT('%', ?, '%') ORDER BY id";
 
-    /**
-     * 新增会员：7 个占位符，下标 1~7 依次绑定 username、password、email、phone、gender、hobby、remark。
-     * id 列自增，不写入。
-     */
     private static final String SQL_ADD =
             "INSERT INTO `member`(username, password, email, phone, gender, hobby, remark) VALUES(?, ?, ?, ?, ?, ?, ?)";
+
+    /**
+     * 修改会员：SET 部分更新除 id 外的七个字段，WHERE 用 id 限定记录，共 8 个占位符。
+     * <p>
+     * 占位符下标 1~7 依次绑定 username、password、email、phone、gender、hobby、remark，
+     * 第 8 个用 setInt 绑定 id。id 本身不允许通过界面修改，只作为定位条件。
+     */
+    private static final String SQL_UPDATE =
+            "UPDATE `member` SET username = ?, password = ?, email = ?, phone = ?, gender = ?, hobby = ?, remark = ? WHERE id = ?";
 
     @Override
     public List<Member> findAll() {
@@ -123,6 +123,34 @@ public class JdbcMemberDao implements MemberDao {
                 throw new DuplicateUsernameException(m.getUname(), e);
             }
             throw new RuntimeException("新增会员失败，username = " + m.getUname(), e);
+        }
+    }
+
+    /**
+     * 修改会员：执行 UPDATE，把受影响行数交回控制层判断。
+     * <p>
+     * 返回 0 有两种情况：id 不存在，或提交的数据与库中原值完全一致（MySQL 不算作"行被改变"）。
+     * 用户名与他人冲突时数据库抛出 1062，转成 {@link DuplicateUsernameException} 让控制层区分处理。
+     */
+    @Override
+    public int update(Member m) {
+        try (Connection conn = DataSourceUtil.getConnection();
+             PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
+            ps.setString(1, m.getUname());
+            ps.setString(2, m.getPassword());
+            ps.setString(3, m.getEmail());
+            ps.setString(4, m.getPhone());
+            ps.setString(5, toDbGender(m.getSex()));
+            ps.setString(6, m.getHobby());
+            ps.setString(7, m.getRemark());
+            ps.setInt(8, m.getId());
+            return ps.executeUpdate();
+        } catch (SQLException e) {
+            if (e instanceof SQLIntegrityConstraintViolationException
+                    || e.getErrorCode() == DuplicateUsernameException.MYSQL_DUPLICATE_ENTRY) {
+                throw new DuplicateUsernameException(m.getUname(), e);
+            }
+            throw new RuntimeException("修改会员失败，id = " + m.getId(), e);
         }
     }
 

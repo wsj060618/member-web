@@ -78,7 +78,7 @@
                                 <td>${member.phone}</td>
                                 <td>${member.sexText}</td>
                                 <td>${member.hobbyText}</td>
-                                <td><a class="btn-sm" href="detail?id=${member.id}">查看</a> <a class="btn-sm danger" href="#">删除</a></td>
+                                <td><a class="btn-sm" href="detail?id=${member.id}">查看</a> <a class="btn-sm" href="member-update?id=${member.id}">编辑</a> <a class="btn-sm danger" href="#">删除</a></td>
                             </tr>
                         </c:forEach>
                     </c:otherwise>
@@ -92,7 +92,7 @@
     <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
 </footer>
 
-<script src="js/member-list.js?v=20261125"></script>
+<script src="js/member-list.js"></script>
 
 </body>
 </html>

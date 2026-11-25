@@ -27,7 +27,7 @@
         <form id="addForm" action="member-add" method="post">
             <div class="form-item">
                 <label for="username">用户名（必填）</label>
-                <input type="text" id="username" name="username" placeholder="会员登录名，不可与已有会员重复" required>
+                <input type="text" id="username" name="username" placeholder="3~16位字母数字下划线" required>
             </div>
 
             <div class="form-item">
@@ -87,32 +87,10 @@
     <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
 </footer>
 
-<%-- 用户名非空的前端校验：逐行注释说明每一步在做什么 --%>
-<script>
-    // 1. 获取表单元素对象
-    const addForm = document.querySelector('#addForm');
-
-    // 2. 为表单绑定提交事件
-    addForm.addEventListener('submit', (e) => {
-        // 2.1 获取用户名输入框
-        const usernameInput = document.querySelector('#username');
-
-        // 2.2 去掉首尾空格后若为空，说明用户没填或只敲了空格：提示并中止提交
-        if (usernameInput.value.trim() === '') {
-            alert('用户名不能为空');
-            usernameInput.focus();
-            e.preventDefault();
-            return;
-        }
-
-        // 2.3 用户名里存在空白字符时同样判为不合法（用户名中间不应带空格）
-        if (/\s/.test(usernameInput.value.trim())) {
-            alert('用户名不能包含空格');
-            usernameInput.focus();
-            e.preventDefault();
-        }
-    });
-</script>
+<%-- 校验规则统一由 js/validation.js 提供（唯一规则源），member-form.js 只做绑定 --%>
+<script src="js/validation.js"></script>
+<script src="js/member-form.js"></script>
+<script>initMemberFormCheck('addForm');</script>
 
 </body>
 </html>

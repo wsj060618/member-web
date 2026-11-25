@@ -1,0 +1,116 @@
+<%@ page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>修改会员 - 会员管理系统</title>
+    <%-- 沿用与 add.jsp 完全相同的 CSS，保证编辑页与新增页风格一致 --%>
+    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="css/add.css">
+</head>
+<body>
+<header class="site-header">
+    <h1>会员管理系统</h1>
+    <nav>
+        <a href="main.html">首页</a>
+        <a href="register.html">注册</a>
+        <a href="login.jsp">登录</a>
+        <a href="member-list">会员列表</a>
+    </nav>
+</header>
+
+<div class="container">
+    <section class="card">
+        <h2>修改会员</h2>
+        <%-- method 必须为 post：更新属于修改操作，用 get 会把密码暴露在地址栏和访问日志里 --%>
+        <%-- action 指向修改会员 Servlet，由它在 doPost 中接收参数并更新 member 表 --%>
+        <form id="editForm" action="member-update" method="post">
+            <%-- 隐藏域保存主键：id 不允许在界面上修改，只作为 UPDATE 的 WHERE 定位条件 --%>
+            <input type="hidden" name="id" value="<c:out value='${member.id}'/>">
+
+            <%-- 各输入框用 EL 取出 request 域中的 member 对象回显数据库原值；
+                 value 属性用单引号包裹的 c:out 输出，避免原值里含双引号时撑破属性 --%>
+            <div class="form-item">
+                <label for="username">用户名（必填）</label>
+                <input type="text" id="username" name="username"
+                       value="<c:out value='${member.uname}'/>"
+                       placeholder="会员登录名，不可与已有会员重复" required>
+            </div>
+
+            <div class="form-item">
+                <label for="password">密码（必填）</label>
+                <%-- 密码用 password 类型回显：输入框内容不可见，避免明文暴露在屏幕上；
+                     用户可清空后重填，不改动则保持原值提交 --%>
+                <input type="password" id="password" name="password"
+                       value="<c:out value='${member.password}'/>"
+                       placeholder="6~16位字母数字" required>
+            </div>
+
+            <div class="form-item">
+                <label for="email">邮箱</label>
+                <input type="email" id="email" name="email"
+                       value="<c:out value='${member.email}'/>"
+                       placeholder="example@xx.com">
+            </div>
+
+            <div class="form-item">
+                <label for="phone">手机号</label>
+                <input type="tel" id="phone" name="phone"
+                       value="<c:out value='${member.phone}'/>"
+                       placeholder="11位手机号">
+            </div>
+
+            <%-- 性别：表单取值为 M/F，按数据库原值自动选中对应单选项 --%>
+            <div class="form-item">
+                <label>性别</label>
+                <label class="radio-label">
+                    <input type="radio" id="gender_m" name="gender" value="M"
+                           <c:if test="${member.sex eq 'male' or member.sex eq 'M'}">checked</c:if>>&nbsp;男
+                </label>
+                <label class="radio-label">
+                    <input type="radio" id="gender_f" name="gender" value="F"
+                           <c:if test="${member.sex eq 'female' or member.sex eq 'F'}">checked</c:if>>&nbsp;女
+                </label>
+            </div>
+
+            <%-- 爱好：按原值给对应 option 加 selected --%>
+            <div class="form-item">
+                <label for="hobby">爱好</label>
+                <select id="hobby" name="hobby">
+                    <option value="">请选择</option>
+                    <option value="reading" ${member.hobby eq 'reading' ? 'selected' : ''}>阅读</option>
+                    <option value="music" ${member.hobby eq 'music' ? 'selected' : ''}>音乐</option>
+                    <option value="traveling" ${member.hobby eq 'traveling' ? 'selected' : ''}>旅行</option>
+                    <option value="sports" ${member.hobby eq 'sports' ? 'selected' : ''}>运动</option>
+                    <option value="coding" ${member.hobby eq 'coding' ? 'selected' : ''}>编程</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label for="remark">备注</label>
+                <textarea id="remark" name="remark" placeholder="选填"><c:out value="${member.remark}"/></textarea>
+            </div>
+
+            <div class="form-item form-actions">
+                <input type="submit" class="btn btn-submit" value="保存修改">
+                <input type="reset" class="btn btn-reset" value="重置">
+                <%-- 返回列表：直接指向列表 Servlet，不依赖浏览器后退，避免回到已失效的表单状态 --%>
+                <a class="btn btn-back" href="member-list">返回列表</a>
+            </div>
+        </form>
+    </section>
+</div>
+
+<footer class="site-footer">
+    <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
+</footer>
+
+<%-- 校验规则统一由 js/validation.js 提供（唯一规则源），member-form.js 只做绑定 --%>
+<script src="js/validation.js"></script>
+<script src="js/member-form.js"></script>
+<script>initMemberFormCheck('editForm');</script>
+
+</body>
+</html>

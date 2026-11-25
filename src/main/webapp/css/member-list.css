@@ -61,6 +61,11 @@
     color: #fff;
     border: 1px solid #f56c6c;
     text-decoration: none;
+    /* button 元素字体不自动继承，需显式声明才能与相邻的 .btn-add 链接保持一致 */
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    cursor: pointer;
 }
 .btn-sm{
     display: inline-block;
@@ -71,6 +76,10 @@
     background-color: #409eff;
     color: #fff;
     text-decoration: none;
+    /* button 元素的字体默认不继承，需显式声明，否则与相邻链接字号不一致 */
+    font-family: inherit;
+    line-height: 1.5;
+    cursor: pointer;
 }
 .btn-sm.danger{
     border-color: #f56c6c;
@@ -78,6 +87,19 @@
 }
 .btn-sm + .btn-sm{
     margin-left: 6px;
+}
+/* 操作列里的删除表单：与"查看""编辑"链接排在同一行，不换行、不额外占位 */
+.inline-form{
+    display: inline;
+    margin: 0;
+}
+.inline-form .btn-sm{
+    margin-left: 6px;
+}
+/* 表头的批量删除表单：与相邻的"新增会员"按钮纵向对齐 */
+.header-actions form{
+    margin: 0;
+    line-height: 1;
 }
 /* 查询结果为空时的占位提示（选择器加 table.data 前缀以覆盖表格单元格默认内边距） */
 table.data td.empty-tip{

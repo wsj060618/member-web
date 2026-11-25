@@ -11,11 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-
-/**
- * 会员详情：根据 ID 查询会员信息。
- * <p>
- */
 @WebServlet("/detail")
 public class MemberDetailServlet extends HttpServlet {
 
@@ -23,19 +18,14 @@ public class MemberDetailServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-        // 获取并校验 id
         String idStr = req.getParameter("id");
         Member member = null;
+        // 非数字 id 直接当查不到处理，避免 parseInt 抛异常
         if (idStr != null && idStr.matches("\\d+")) {
-            // 调用 MemberDao 的 findById 获取该会员信息
             member = memberDao.findById(Integer.parseInt(idStr));
         }
 
-        // 将会员信息存入 request 域
         req.setAttribute("member", member);
-
-        // 转发到 detail.jsp 页面
         req.getRequestDispatcher("/detail.jsp").forward(req, resp);
     }
 }

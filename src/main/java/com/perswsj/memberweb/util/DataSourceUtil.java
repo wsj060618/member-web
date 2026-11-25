@@ -7,17 +7,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
- * 数据源工具类：统一从 Tomcat 连接池获取数据库连接。
- * <p>
- * 连接池由 {@code META-INF/context.xml} 里的 {@code jdbc/memberDS} 资源提供，
- * 连接由连接池创建和回收，调用方 {@code close()} 即为归还连接。
+ * 统一从 Tomcat 连接池取连接。连接池由 {@code META-INF/context.xml} 的 {@code jdbc/memberDS} 提供，
+ * 调用方 {@code close()} 即为归还连接。
  */
 public final class DataSourceUtil {
 
-    /** 与 META-INF/context.xml 中 Resource 的 name 对应 */
     private static final String JNDI_NAME = "java:comp/env/jdbc/memberDS";
 
-    /** DataSource 线程安全，全应用共享一份即可 */
+    /** 线程安全，全应用共用一份 */
     private static final DataSource DATA_SOURCE;
 
     static {
@@ -39,9 +36,7 @@ public final class DataSourceUtil {
     private DataSourceUtil() {
     }
 
-    /**
-     * 从连接池取一个连接。配合 try-with-resources 使用，关闭即归还连接池。
-     */
+    /** 配合 try-with-resources 使用，关闭即归还连接池 */
     public static Connection getConnection() throws SQLException {
         return DATA_SOURCE.getConnection();
     }

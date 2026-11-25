@@ -22,29 +22,30 @@
         <div class="list-header">
             <h2>会员列表</h2>
             <div class="header-actions">
-                <%-- 指向新增会员 Servlet 的 doGet，由它转发到 add.jsp 显示表单 --%>
                 <a class="btn btn-add" href="member-add">+ 新增会员</a>
-                <a class="btn btn-batchdel" id="btnBatchDelete" href="#">批量删除</a>
+                <%-- ids 隐藏域由 member-list.js 按勾选行动态写入 --%>
+                <form id="batchDeleteForm" action="member-delete" method="post"
+                      onsubmit="return confirmBatchDelete();">
+                    <div id="batchIds"></div>
+                    <button type="submit" class="btn btn-batchdel" id="btnBatchDelete">批量删除</button>
+                </form>
             </div>
         </div>
-        <!-- 搜索：GET 提交到 /member-list，关键字为空则查全部；关键字经 URL 编码，中文与特殊字符都能正确传递 -->
+        <!-- GET 提交，关键字为空则查全部 -->
         <form class="list-tools" action="member-list" method="get">
             <input type="text" name="keyword" class="search-input" value="<c:out value='${keyword}'/>"
                    placeholder="按用户名搜索" aria-label="按用户名搜索">
             <input type="submit" class="btn btn-search" value="搜索">
             <a class="btn btn-search" href="member-list">显示全部</a>
         </form>
-        <%-- 新增会员后的提示：由 MemberAddServlet 以 ?message= 重定向带回（PRG）。
-             前端改为 alert 弹窗提示，不再在页面顶部渲染内联提示条。
-             message 先写入 data-message 属性（c:out 做 XML 转义，防止引号等特殊字符破坏属性），
-             再由 member-list.js 读取并弹出；弹出后立即清除 URL 上的 message 参数，避免刷新时重复提示。 --%>
+        <%-- MemberAddServlet 以 ?message= 重定向带回（PRG），这里只把它藏进 data-message，
+             由 member-list.js 弹窗并清掉 URL 参数，避免刷新时重复提示 --%>
         <c:if test="${not empty message}">
             <div id="flashMessage" data-message="<c:out value='${message}'/>" ${fn:contains(message, '成功') ? 'data-type="success"' : 'data-type="fail"'} hidden></div>
         </c:if>
         <c:if test="${not empty errorMessage}">
             <p class="list-error"><c:out value="${errorMessage}"/></p>
         </c:if>
-        <!-- 搜索中给出明确反馈：关键字回显 + 结果条数 -->
         <c:if test="${not empty keyword}">
             <p class="list-tip">当前搜索关键字：<strong><c:out value="${keyword}"/></strong>，共 ${empty memberList ? 0 : memberList.size()} 条结果</p>
         </c:if>
@@ -78,7 +79,16 @@
                                 <td>${member.phone}</td>
                                 <td>${member.sexText}</td>
                                 <td>${member.hobbyText}</td>
-                                <td><a class="btn-sm" href="detail?id=${member.id}">查看</a> <a class="btn-sm" href="member-update?id=${member.id}">编辑</a> <a class="btn-sm danger" href="#">删除</a></td>
+                                <%-- 删除必须用 POST：GET 链接会被浏览器预取或误点后直接删库 --%>
+                                <td>
+                                    <a class="btn-sm" href="detail?id=${member.id}">查看</a>
+                                    <a class="btn-sm" href="member-update?id=${member.id}">编辑</a>
+                                    <form class="inline-form" action="member-delete" method="post"
+                                          onsubmit="return confirm('确定删除会员【${member.uname}】？删除后不可恢复。');">
+                                        <input type="hidden" name="id" value="${member.id}">
+                                        <button type="submit" class="btn-sm danger">删除</button>
+                                    </form>
+                                </td>
                             </tr>
                         </c:forEach>
                     </c:otherwise>

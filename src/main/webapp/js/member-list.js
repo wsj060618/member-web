@@ -1,32 +1,65 @@
-// 静态元素引用
+// 会员列表页交互：全选联动、批量删除的确认与 id 收集。
+// 单条删除不走这里——它由行内 POST 表单 + onsubmit 的 confirm 完成。
+
 let table = document.querySelector('table.data');
 let tbody = table.querySelector('tbody');
 let checkAll = document.getElementById('checkAll');
-let btnBatchDelete = document.getElementById('btnBatchDelete');
 
-// 新增会员结果
-// 脚本在 </body> 前引入，此时 #flashMessage 已在 DOM 中，可直接取用
 let flashBox = document.getElementById('flashMessage');
 if (flashBox) {
     alert(flashBox.dataset.message);
-    // 清掉 URL 上的 message 参数，避免刷新页面重复弹窗
+    // 抹掉 URL 上的 message 参数，否则刷新页面会重复弹窗
     let url = new URL(location.href);
     url.searchParams.delete('message');
     history.replaceState(null, '', url);
 }
 
-// 根据当前行复选框状态，同步表头全选框
 function syncCheckAll() {
     let total = tbody.querySelectorAll('.row-check').length;
     let checked = tbody.querySelectorAll('.row-check:checked').length;
     checkAll.checked = (total > 0 && total === checked);
 }
 
-// 事件委托：整个表格只绑一次，动态行也能自动生效
+function getCheckedIds() {
+    let ids = [];
+    tbody.querySelectorAll('.row-check:checked').forEach(function (cb) {
+        let tr = cb.closest('tr');
+        if (tr && tr.dataset.id) ids.push(tr.dataset.id);
+    });
+    return ids;
+}
+
+/** 由批量删除表单的 onsubmit 调用，返回 false 即取消提交 */
+function confirmBatchDelete() {
+    let ids = getCheckedIds();
+
+    if (ids.length === 0) {
+        alert('请先勾选要删除的会员');
+        return false;
+    }
+
+    if (!confirm('确定删除选中的 ' + ids.length + ' 条会员？删除后不可恢复。')) {
+        return false;
+    }
+
+    // 写成同名隐藏域，Servlet 用 getParameterValues("ids") 一次取到
+    let holder = document.getElementById('batchIds');
+    holder.innerHTML = '';
+    ids.forEach(function (id) {
+        let input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'ids';
+        input.value = id;
+        holder.appendChild(input);
+    });
+
+    return true;
+}
+
+// 事件委托：整个表格只绑一次
 table.addEventListener('click', function (e) {
     let target = e.target;
 
-    // 表头全选 / 全不选
     if (target === checkAll) {
         tbody.querySelectorAll('.row-check').forEach(function (cb) {
             cb.checked = checkAll.checked;
@@ -34,40 +67,8 @@ table.addEventListener('click', function (e) {
         return;
     }
 
-    // 行复选框被点击 → 重新判断表头状态
     if (target.classList.contains('row-check')) {
         syncCheckAll();
         return;
     }
-
-    // 单条删除
-    let delBtn = target.closest('.btn-sm.danger');
-    if (delBtn) {
-        if (confirm('确定删除该会员？')) {
-            let id = delBtn.closest('tr').dataset.id;
-            // TODO: 接入后端 DELETE /member/{id}（用 id）
-            delBtn.closest('tr').remove();
-            syncCheckAll();
-        }
-    }
-});
-
-// 批量删除
-btnBatchDelete.addEventListener('click', function (e) {
-    e.preventDefault();
-    let checkedBoxes = tbody.querySelectorAll('.row-check:checked');
-    if (checkedBoxes.length === 0) {
-        alert('请先勾选要删除的会员');
-        return;
-    }
-    if (!confirm('确定删除选中的 ' + checkedBoxes.length + ' 条会员？')) return;
-
-    let ids = [];
-    checkedBoxes.forEach(function (cb) {
-        let tr = cb.closest('tr');
-        if (tr.dataset.id) ids.push(tr.dataset.id);
-        tr.remove();
-    });
-    // TODO: 把 ids 发给后端批量删除，例如 DELETE /member/batch，body: JSON.stringify(ids)
-    syncCheckAll();
 });

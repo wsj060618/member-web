@@ -6,7 +6,6 @@
 <head>
     <meta charset="UTF-8">
     <title>修改会员 - 会员管理系统</title>
-    <%-- 沿用与 add.jsp 完全相同的 CSS，保证编辑页与新增页风格一致 --%>
     <link rel="stylesheet" href="css/site.css">
     <link rel="stylesheet" href="css/add.css">
 </head>
@@ -24,14 +23,11 @@
 <div class="container">
     <section class="card">
         <h2>修改会员</h2>
-        <%-- method 必须为 post：更新属于修改操作，用 get 会把密码暴露在地址栏和访问日志里 --%>
-        <%-- action 指向修改会员 Servlet，由它在 doPost 中接收参数并更新 member 表 --%>
+        <%-- 必须用 post：用 get 会把密码暴露在地址栏和访问日志里 --%>
         <form id="editForm" action="member-update" method="post">
-            <%-- 隐藏域保存主键：id 不允许在界面上修改，只作为 UPDATE 的 WHERE 定位条件 --%>
             <input type="hidden" name="id" value="<c:out value='${member.id}'/>">
 
-            <%-- 各输入框用 EL 取出 request 域中的 member 对象回显数据库原值；
-                 value 属性用单引号包裹的 c:out 输出，避免原值里含双引号时撑破属性 --%>
+            <%-- value 用单引号包 c:out，原值里含双引号时也不会撑破属性 --%>
             <div class="form-item">
                 <label for="username">用户名（必填）</label>
                 <input type="text" id="username" name="username"
@@ -41,8 +37,6 @@
 
             <div class="form-item">
                 <label for="password">密码（必填）</label>
-                <%-- 密码用 password 类型回显：输入框内容不可见，避免明文暴露在屏幕上；
-                     用户可清空后重填，不改动则保持原值提交 --%>
                 <input type="password" id="password" name="password"
                        value="<c:out value='${member.password}'/>"
                        placeholder="6~16位字母数字" required>
@@ -62,7 +56,6 @@
                        placeholder="11位手机号">
             </div>
 
-            <%-- 性别：表单取值为 M/F，按数据库原值自动选中对应单选项 --%>
             <div class="form-item">
                 <label>性别</label>
                 <label class="radio-label">
@@ -75,7 +68,6 @@
                 </label>
             </div>
 
-            <%-- 爱好：按原值给对应 option 加 selected --%>
             <div class="form-item">
                 <label for="hobby">爱好</label>
                 <select id="hobby" name="hobby">
@@ -96,7 +88,6 @@
             <div class="form-item form-actions">
                 <input type="submit" class="btn btn-submit" value="保存修改">
                 <input type="reset" class="btn btn-reset" value="重置">
-                <%-- 返回列表：直接指向列表 Servlet，不依赖浏览器后退，避免回到已失效的表单状态 --%>
                 <a class="btn btn-back" href="member-list">返回列表</a>
             </div>
         </form>
@@ -107,7 +98,6 @@
     <p>&copy; 2026 长沙工业学院 • 应用程序设计课程</p>
 </footer>
 
-<%-- 校验规则统一由 js/validation.js 提供（唯一规则源），member-form.js 只做绑定 --%>
 <script src="js/validation.js"></script>
 <script src="js/member-form.js"></script>
 <script>initMemberFormCheck('editForm');</script>

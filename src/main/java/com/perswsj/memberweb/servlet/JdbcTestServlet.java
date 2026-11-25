@@ -17,14 +17,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * 临时连接测试 Servlet：验证 "JNDI 查找 -> 连接池 -> PreparedStatement -> ResultSet" 整条链路。
- * 验证通过后可删除；正式代码里的数据源查找由 DataSourceUtil 统一承担。
+ * 临时验证 JNDI → 连接池 → PreparedStatement → ResultSet 整条链路，验证通过后可删。
  * 访问地址：http://localhost:8080/member-web/jdbcTest
  */
 @WebServlet("/jdbcTest")
 public class JdbcTestServlet extends HttpServlet {
 
-    /** 只含一个问号占位符：按主键查一条会员 */
     private static final String SQL =
             "SELECT id, username, email, phone, gender, hobby FROM member WHERE id = ?";
 
@@ -40,33 +38,26 @@ public class JdbcTestServlet extends HttpServlet {
 
         final int id = 1;
 
-        // 通过 InitialContext 查找 java:comp/env/jdbc/memberDS，拿到 DataSource
         DataSource ds;
         try {
-            InitialContext ic = new InitialContext();
-            ds = (DataSource) ic.lookup("java:comp/env/jdbc/memberDS");
+            ds = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/memberDS");
         } catch (NamingException e) {
-            // 查找失败属于配置问题，异常只进日志，页面只给提示
             log("查找数据源失败：请检查 META-INF/context.xml 是否随应用部署、"
                     + "mysql-connector-j 是否在 Tomcat 的 lib 目录", e);
             out.println("<p style='color:red'>查找数据源失败，请查看服务器日志</p></body></html>");
             return;
         }
 
-        // 调用 getConnection 取连接
         try (Connection conn = ds.getConnection();
              PreparedStatement ps = conn.prepareStatement(SQL)) {
 
-            // 绑定参数，下标从 1 开始，顺序与问号顺序一致
             ps.setInt(1, id);
 
-            // 执行查询，ResultSet 也交给 try-with-resources 管理
             try (ResultSet rs = ps.executeQuery()) {
                 boolean found = false;
                 out.println("<table border='1' cellpadding='6' cellspacing='0'>");
                 out.println("<tr><th>编号</th><th>用户名</th><th>邮箱</th>"
                         + "<th>手机</th><th>性别</th><th>爱好</th></tr>");
-                // 遍历结果集，把每行字段组织成 HTML 表格输出
                 while (rs.next()) {
                     found = true;
                     String rawGender = rs.getString("gender");
@@ -89,7 +80,7 @@ public class JdbcTestServlet extends HttpServlet {
                 }
             }
         } catch (SQLException e) {
-            // SQL 异常只在控制台记录，页面不输出异常原文（避免泄露 SQL、库名、账号）
+            // 异常原文会带出 SQL、库名、账号，只进日志
             log("查询会员数据失败，id = " + id, e);
             out.println("<p style='color:red'>查询失败，请查看服务器日志</p>");
         }

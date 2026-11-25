@@ -12,7 +12,6 @@ public class MainServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        // 转发到 main.html 页面
         req.getRequestDispatcher("/main.html").forward(req, resp);
     }
 }

@@ -3,6 +3,7 @@ package com.perswsj.memberweb.servlet;
 import com.perswsj.memberweb.dao.JdbcMemberDao;
 import com.perswsj.memberweb.dao.MemberDao;
 import com.perswsj.memberweb.pojo.Member;
+import com.perswsj.memberweb.util.WebUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -22,14 +23,11 @@ public class MemberListServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String keyword = req.getParameter("keyword");
-        if (keyword != null) {
-            keyword = keyword.trim();
-        }
+        String keyword = WebUtil.trim(req.getParameter("keyword"));
 
         List<Member> list = List.of();
         try {
-            if (keyword == null || keyword.isEmpty()) {
+            if (keyword.isEmpty()) {
                 list = memberDao.findAll();
             } else {
                 list = memberDao.findByName(keyword);

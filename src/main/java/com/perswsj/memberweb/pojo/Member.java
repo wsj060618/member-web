@@ -10,7 +10,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Member implements Serializable {
-    private int id;
+    private Integer id;
     private String uname;
     private String password;
     private String email;

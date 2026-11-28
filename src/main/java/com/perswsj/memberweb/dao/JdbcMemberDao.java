@@ -99,17 +99,10 @@ public class JdbcMemberDao implements MemberDao {
     public int add(Member m) {
         try (Connection conn = DataSourceUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(SQL_ADD)) {
-            ps.setString(1, m.getUname());
-            ps.setString(2, m.getPassword());
-            ps.setString(3, m.getEmail());
-            ps.setString(4, m.getPhone());
-            ps.setString(5, toDbGender(m.getSex()));
-            ps.setString(6, m.getHobby());
-            ps.setString(7, m.getRemark());
+            bindMember(ps, m);
             return ps.executeUpdate();
         } catch (SQLException e) {
-            if (e instanceof SQLIntegrityConstraintViolationException
-                    || e.getErrorCode() == DuplicateUsernameException.MYSQL_DUPLICATE_ENTRY) {
+            if (isDuplicateKey(e)) {
                 throw new DuplicateUsernameException(m.getUname(), e);
             }
             throw new RuntimeException("新增会员失败，username = " + m.getUname(), e);
@@ -121,20 +114,16 @@ public class JdbcMemberDao implements MemberDao {
      */
     @Override
     public int update(Member m) {
+        if (m.getId() == null) {
+            throw new IllegalArgumentException("修改会员时 id 不能为空");
+        }
         try (Connection conn = DataSourceUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement(SQL_UPDATE)) {
-            ps.setString(1, m.getUname());
-            ps.setString(2, m.getPassword());
-            ps.setString(3, m.getEmail());
-            ps.setString(4, m.getPhone());
-            ps.setString(5, toDbGender(m.getSex()));
-            ps.setString(6, m.getHobby());
-            ps.setString(7, m.getRemark());
+            bindMember(ps, m);
             ps.setInt(8, m.getId());
             return ps.executeUpdate();
         } catch (SQLException e) {
-            if (e instanceof SQLIntegrityConstraintViolationException
-                    || e.getErrorCode() == DuplicateUsernameException.MYSQL_DUPLICATE_ENTRY) {
+            if (isDuplicateKey(e)) {
                 throw new DuplicateUsernameException(m.getUname(), e);
             }
             throw new RuntimeException("修改会员失败，id = " + m.getId(), e);
@@ -150,6 +139,25 @@ public class JdbcMemberDao implements MemberDao {
         } catch (SQLException e) {
             throw new RuntimeException("删除会员失败，id = " + id, e);
         }
+    }
+
+    /**
+     * add 与 update 共用 1~7 号占位符的绑定，字段顺序必须与 SQL_ADD / SQL_UPDATE 一致。
+     */
+    private void bindMember(PreparedStatement ps, Member m) throws SQLException {
+        ps.setString(1, m.getUname());
+        ps.setString(2, m.getPassword());
+        ps.setString(3, m.getEmail());
+        ps.setString(4, m.getPhone());
+        ps.setString(5, toDbGender(m.getSex()));
+        ps.setString(6, m.getHobby());
+        ps.setString(7, m.getRemark());
+    }
+
+    /** MySQL 1062：唯一键冲突（用户名重复）。 */
+    private boolean isDuplicateKey(SQLException e) {
+        return e instanceof SQLIntegrityConstraintViolationException
+                || e.getErrorCode() == DuplicateUsernameException.MYSQL_DUPLICATE_ENTRY;
     }
 
     private Member mapRow(ResultSet rs) throws SQLException {
